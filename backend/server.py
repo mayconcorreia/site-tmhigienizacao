@@ -493,7 +493,7 @@ async def admin_update_pricing(pricing_id: str, pricing_data: PricingCategoryUpd
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Pricing category not found")
     
-    updated_pricing = await db.pricing.find_one({"id": pricing_id})
+    updated_pricing = await db.pricing.find_one({"id": pricing_id}, {"_id": 0})
     return {"success": True, "pricing": updated_pricing}
 
 @admin_router.delete("/pricing/{pricing_id}")
