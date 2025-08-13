@@ -473,7 +473,7 @@ async def admin_delete_service(service_id: str, current_user: str = Depends(veri
 # Admin Pricing Management
 @admin_router.get("/pricing")
 async def admin_get_pricing(current_user: str = Depends(verify_token)):
-    pricing = await db.pricing.find().to_list(1000)
+    pricing = await db.pricing.find({}, {"_id": 0}).to_list(1000)
     return {"pricing": pricing}
 
 @admin_router.post("/pricing", response_model=PricingCategory)
