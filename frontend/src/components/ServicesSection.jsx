@@ -1,10 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Button } from './ui/button';
 import { Sofa, Bed, Home, Car, Sun, CheckCircle, MessageCircle } from 'lucide-react';
-import { companyInfo, mockServices } from './mock';
+import { apiService } from '../services/api';
+import { mockServices, companyInfo } from './mock';
 
 const ServicesSection = () => {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        setLoading(true);
+        const servicesData = await apiService.getServices();
+        setServices(servicesData);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching services:', err);
+        setError('Erro ao carregar serviços. Mostrando dados padrão.');
+        // Keep mock data as fallback
+        setServices(mockServices);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   const getIcon = (iconName) => {
     const icons = {
       Sofa: Sofa,
@@ -23,6 +48,19 @@ const ServicesSection = () => {
     window.open(url, '_blank');
   };
 
+  if (loading) {
+    return (
+      <section id="services" className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Carregando serviços...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="services" className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -34,10 +72,15 @@ const ServicesSection = () => {
             Oferecemos higienização profissional para todos os tipos de estofados 
             com equipamentos modernos e produtos de alta qualidade.
           </p>
+          {error && (
+            <div className="mt-4 p-3 bg-yellow-100 border border-yellow-400 rounded-lg text-yellow-800 text-sm">
+              {error}
+            </div>
+          )}
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mockServices.map((service, index) => (
+          {services.map((service, index) => (
             <Card key={service.id} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 bg-white">
               <CardHeader className="text-center pb-4">
                 <div className="mx-auto mb-4 p-4 bg-gradient-to-r from-purple-100 to-teal-100 text-purple-600 rounded-full w-fit group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:via-cyan-500 group-hover:to-teal-500 group-hover:text-white transition-all duration-300">
