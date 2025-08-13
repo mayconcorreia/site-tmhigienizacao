@@ -375,7 +375,7 @@ async def root():
 
 @api_router.get("/services")
 async def get_services():
-    services = await db.services.find({"active": True}).to_list(1000)
+    services = await db.services.find({"active": True}, {"_id": 0}).to_list(1000)
     return {"services": services}
 
 @api_router.get("/pricing")
