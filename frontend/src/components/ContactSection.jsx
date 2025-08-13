@@ -37,35 +37,44 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Send to WhatsApp
-    const message = `*Novo contato do site:*
+    try {
+      // Submit to API
+      await apiService.submitContact(formData);
+      
+      // Send to WhatsApp
+      const message = `*Novo contato do site:*
 Nome: ${formData.name}
 Telefone: ${formData.phone}
 Email: ${formData.email}
 Serviço: ${formData.service}
 Mensagem: ${formData.message}`;
-    
-    const url = `https://wa.me/${companyInfo.whatsapp}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-    
-    // Reset form
-    setFormData({
-      name: '',
-      phone: '',
-      email: '',
-      service: '',
-      message: ''
-    });
-    
-    toast({
-      title: '✅ Mensagem enviada!',
-      description: 'Entraremos em contato em breve.',
-    });
-    
-    setIsSubmitting(false);
+      
+      const url = `https://wa.me/${companyInfo.whatsapp}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+      
+      // Reset form
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        service: '',
+        message: ''
+      });
+      
+      toast({
+        title: '✅ Mensagem enviada!',
+        description: 'Entraremos em contato em breve.',
+      });
+    } catch (error) {
+      console.error('Error submitting contact:', error);
+      toast({
+        title: '❌ Erro ao enviar',
+        description: 'Tente novamente ou entre em contato diretamente.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleWhatsAppClick = () => {
