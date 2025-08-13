@@ -539,7 +539,7 @@ async def admin_delete_testimonial(testimonial_id: str, current_user: str = Depe
 # Admin Company Info Management
 @admin_router.get("/company-info")
 async def admin_get_company_info(current_user: str = Depends(verify_token)):
-    company = await db.company_info.find_one()
+    company = await db.company_info.find_one({}, {"_id": 0})
     return {"company": company}
 
 @admin_router.put("/company-info")
