@@ -10,6 +10,15 @@ import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
 import { Toaster } from "./components/ui/toaster";
 
+// Admin imports
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/admin/ProtectedRoute";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminLogin from "./pages/admin/AdminLogin";
+import Dashboard from "./pages/admin/Dashboard";
+import Services from "./pages/admin/Services";
+import Contacts from "./pages/admin/Contacts";
+
 const Home = () => {
   return (
     <div className="min-h-screen">
@@ -27,12 +36,28 @@ const Home = () => {
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </BrowserRouter>
-      <Toaster />
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }>
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="services" element={<Services />} />
+              <Route path="contacts" element={<Contacts />} />
+              <Route index element={<Dashboard />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+        <Toaster />
+      </AuthProvider>
     </div>
   );
 }
