@@ -380,7 +380,7 @@ async def get_services():
 
 @api_router.get("/pricing")
 async def get_pricing():
-    pricing = await db.pricing.find({"active": True}).to_list(1000)
+    pricing = await db.pricing.find({"active": True}, {"_id": 0}).to_list(1000)
     return {"pricing": pricing}
 
 @api_router.get("/testimonials")
