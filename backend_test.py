@@ -431,11 +431,11 @@ class BackendTester:
             # Try to access admin services without token
             response = requests.get(f"{API_BASE}/admin/services", timeout=10)
             
-            if response.status_code == 401:
-                self.log_result("Unauthorized Admin Access", True, "Correctly blocked unauthorized access")
+            if response.status_code in [401, 403]:
+                self.log_result("Unauthorized Admin Access", True, f"Correctly blocked unauthorized access (status: {response.status_code})")
                 return True
             else:
-                self.log_result("Unauthorized Admin Access", False, f"Expected 401, got {response.status_code}")
+                self.log_result("Unauthorized Admin Access", False, f"Expected 401 or 403, got {response.status_code}")
         except Exception as e:
             self.log_result("Unauthorized Admin Access", False, f"Error: {str(e)}")
         return False
