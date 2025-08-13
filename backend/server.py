@@ -506,7 +506,7 @@ async def admin_delete_pricing(pricing_id: str, current_user: str = Depends(veri
 # Admin Testimonials Management
 @admin_router.get("/testimonials")
 async def admin_get_testimonials(current_user: str = Depends(verify_token)):
-    testimonials = await db.testimonials.find().to_list(1000)
+    testimonials = await db.testimonials.find({}, {"_id": 0}).to_list(1000)
     return {"testimonials": testimonials}
 
 @admin_router.post("/testimonials", response_model=Testimonial)
