@@ -460,7 +460,7 @@ async def admin_update_service(service_id: str, service_data: ServiceUpdate, cur
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Service not found")
     
-    updated_service = await db.services.find_one({"id": service_id})
+    updated_service = await db.services.find_one({"id": service_id}, {"_id": 0})
     return {"success": True, "service": updated_service}
 
 @admin_router.delete("/services/{service_id}")
