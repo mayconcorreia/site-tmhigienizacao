@@ -1,11 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Button } from './ui/button';
 import { MessageCircle, Tag } from 'lucide-react';
-import { companyInfo, mockPricing } from './mock';
+import { apiService } from '../services/api';
+import { mockPricing, companyInfo } from './mock';
 
 const PricingSection = () => {
-  const [selectedCategory, setSelectedCategory] = useState(mockPricing[0]?.category || '');
+  const [pricing, setPricing] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        setLoading(true);
+        const pricingData = await apiService.getPricing();
+        setPricing(pricingData);
+        if (pricingData.length > 0) {
+          setSelectedCategory(pricingData[0].category);
+        }
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching pricing:', err);
+        setError('Erro ao carregar preços. Mostrando dados padrão.');
+        // Keep mock data as fallback
+        setPricing(mockPricing);
+        setSelectedCategory(mockPricing[0]?.category || '');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPricing();
+  }, []);
 
   const handleWhatsAppClick = (item) => {
     const message = `Olá! Gostaria de solicitar o serviço: ${item.name} - ${item.price}`;
@@ -19,7 +47,20 @@ const PricingSection = () => {
     window.open(url, '_blank');
   };
 
-  const selectedCategoryData = mockPricing.find(category => category.category === selectedCategory);
+  const selectedCategoryData = pricing.find(category => category.category === selectedCategory);
+
+  if (loading) {
+    return (
+      <section id="pricing" className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Carregando preços...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="pricing" className="py-16 bg-white">
@@ -32,11 +73,16 @@ const PricingSection = () => {
             Preços competitivos e transparentes. Os valores podem variar conforme o estado 
             do estofado e tipo de tecido.
           </p>
+          {error && (
+            <div className="mt-4 p-3 bg-yellow-100 border border-yellow-400 rounded-lg text-yellow-800 text-sm">
+              {error}
+            </div>
+          )}
         </div>
 
         {/* Category Tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {mockPricing.map((category) => (
+          {pricing.map((category) => (
             <Button
               key={category.id}
               onClick={() => setSelectedCategory(category.category)}
