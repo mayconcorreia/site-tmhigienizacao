@@ -385,7 +385,7 @@ async def get_pricing():
 
 @api_router.get("/testimonials")
 async def get_testimonials():
-    testimonials = await db.testimonials.find({"active": True}).to_list(1000)
+    testimonials = await db.testimonials.find({"active": True}, {"_id": 0}).to_list(1000)
     return {"testimonials": testimonials}
 
 @api_router.get("/company-info")
