@@ -551,7 +551,7 @@ async def admin_update_company_info(company_data: CompanyInfo, current_user: str
 # Admin Contacts Management
 @admin_router.get("/contacts")
 async def admin_get_contacts(current_user: str = Depends(verify_token)):
-    contacts = await db.contacts.find().sort("created_at", -1).to_list(1000)
+    contacts = await db.contacts.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
     return {"contacts": contacts}
 
 @admin_router.put("/contacts/{contact_id}/status")
