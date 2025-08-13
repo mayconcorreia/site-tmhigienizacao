@@ -560,7 +560,7 @@ async def admin_update_contact_status(contact_id: str, status_data: ContactStatu
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Contact not found")
     
-    updated_contact = await db.contacts.find_one({"id": contact_id})
+    updated_contact = await db.contacts.find_one({"id": contact_id}, {"_id": 0})
     return {"success": True, "contact": updated_contact}
 
 @admin_router.delete("/contacts/{contact_id}")
