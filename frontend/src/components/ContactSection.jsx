@@ -6,6 +6,7 @@ import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { MessageCircle, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { companyInfo, mockServices } from './mock';
+import { apiService } from '../services/api';
 import { useToast } from '../hooks/use-toast';
 
 const ContactSection = () => {
