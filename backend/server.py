@@ -526,7 +526,7 @@ async def admin_update_testimonial(testimonial_id: str, testimonial_data: Testim
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Testimonial not found")
     
-    updated_testimonial = await db.testimonials.find_one({"id": testimonial_id})
+    updated_testimonial = await db.testimonials.find_one({"id": testimonial_id}, {"_id": 0})
     return {"success": True, "testimonial": updated_testimonial}
 
 @admin_router.delete("/testimonials/{testimonial_id}")
