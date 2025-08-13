@@ -440,7 +440,7 @@ async def verify_admin_token(current_user: str = Depends(verify_token)):
 # Admin Services Management
 @admin_router.get("/services")
 async def admin_get_services(current_user: str = Depends(verify_token)):
-    services = await db.services.find().to_list(1000)
+    services = await db.services.find({}, {"_id": 0}).to_list(1000)
     return {"services": services}
 
 @admin_router.post("/services", response_model=Service)
