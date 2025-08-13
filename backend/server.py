@@ -545,7 +545,7 @@ async def admin_get_company_info(current_user: str = Depends(verify_token)):
 @admin_router.put("/company-info")
 async def admin_update_company_info(company_data: CompanyInfo, current_user: str = Depends(verify_token)):
     await db.company_info.replace_one({}, company_data.dict(), upsert=True)
-    updated_company = await db.company_info.find_one()
+    updated_company = await db.company_info.find_one({}, {"_id": 0})
     return {"success": True, "company": updated_company}
 
 # Admin Contacts Management
