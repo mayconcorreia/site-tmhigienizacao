@@ -390,7 +390,7 @@ async def get_testimonials():
 
 @api_router.get("/company-info")
 async def get_company_info():
-    company = await db.company_info.find_one()
+    company = await db.company_info.find_one({}, {"_id": 0})
     if not company:
         # Return default
         company = {
